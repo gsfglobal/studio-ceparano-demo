@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Dentistico Ceparano – Sant'Antimo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#0b1514;--night-2:#11201e;--forest:#1b3531;--ivory:#f5f0e7;--ivory-2:#ebe3d5;--stone:#d9cdb9;
+  --gold:#b8956a;--gold-2:#dcc29a;--ink:#182120;--muted:#6c7471;--line:rgba(24,33,32,.12);--line-d:rgba(245,240,231,.14);
+  --ease:cubic-bezier(.19,1,.22,1);--ease2:cubic-bezier(.65,0,.35,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);background:var(--ivory);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.lock{overflow:hidden}
+h1,h2,h3,.serif{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;line-height:1.02;letter-spacing:-.015em}
+em{font-style:italic;color:var(--gold);font-weight:300}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.kicker{font-size:11px;letter-spacing:.34em;text-transform:uppercase;font-weight:500;color:var(--gold);display:inline-flex;align-items:center;gap:16px}
+.kicker:before{content:"";width:38px;height:1px;background:currentColor}
+.grain{position:fixed;inset:-50%;pointer-events:none;z-index:300;opacity:.045;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain 1s steps(4) infinite}
+@keyframes grain{25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-1%,3%)}}
+
+/* preloader */
+#pre{position:fixed;inset:0;z-index:400;background:var(--night);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:26px;transition:transform 1.2s var(--ease2)}
+#pre.out{transform:translateY(-100%)}
+#pre .pname{font-family:"Cormorant Garamond",serif;color:var(--ivory);font-size:clamp(40px,6vw,74px);font-weight:300;overflow:hidden}
+#pre .pname span{display:inline-block;transform:translateY(110%);animation:up 1s .2s var(--ease) forwards}
+#pre .bar{width:180px;height:1px;background:var(--line-d);position:relative;overflow:hidden}
+#pre .bar:after{content:"";position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;animation:load 1.4s .3s var(--ease2) forwards}
+@keyframes load{to{transform:scaleX(1)}}
+/* curtain */
+#curtain{position:fixed;inset:0;z-index:350;background:var(--forest);transform:translateY(100%);pointer-events:none}
+#curtain.in{transition:transform .7s var(--ease2);transform:none}
+#curtain.out{transition:transform .7s var(--ease2);transform:translateY(-100%)}
+
+.demo-bar{position:relative;z-index:70;background:#060c0b;color:#97a8a4;font-size:11px;letter-spacing:.05em;text-align:center;padding:8px 14px}
+.demo-bar b{color:var(--gold-2);font-weight:500}
+
+/* cursor */
+.cur{position:fixed;left:0;top:0;width:8px;height:8px;border-radius:50%;background:var(--gold);pointer-events:none;z-index:500;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .4s var(--ease),height .4s var(--ease),background .3s}
+.cur.big{width:74px;height:74px;background:rgba(220,194,154,.9)}
+.cur span{position:absolute;inset:0;display:grid;place-items:center;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--night);opacity:0;transition:opacity .3s}
+.cur.big span{opacity:1}
+@media (hover:none){.cur{display:none}}
+
+/* header */
+header{position:fixed;left:0;right:0;top:var(--bar,32px);z-index:60;transition:background .6s var(--ease),top .6s var(--ease),transform .6s var(--ease)}
+header.solid{top:0;background:rgba(11,21,20,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line-d)}
+header.hide{transform:translateY(-100%)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:92px;color:var(--ivory);transition:height .6s var(--ease)}
+header.solid .nav{height:72px}
+.logo{display:flex;align-items:center;gap:14px;cursor:pointer}
+.logo-mark{width:46px;height:46px;border:1px solid rgba(184,149,106,.7);border-radius:50%;display:grid;place-items:center}
+.logo b{font-family:"Cormorant Garamond",serif;font-size:26px;font-weight:400;display:block;line-height:1;letter-spacing:.06em}
+.logo span{font-size:9px;letter-spacing:.38em;text-transform:uppercase;color:var(--gold-2)}
+nav.menu{display:flex;gap:40px}
+nav.menu a{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,231,.7);cursor:pointer;position:relative;padding:6px 0;transition:color .3s;overflow:hidden;display:inline-block}
+nav.menu a:after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:right;transition:transform .6s var(--ease)}
+nav.menu a:hover,nav.menu a.active{color:var(--ivory)}
+nav.menu a:hover:after,nav.menu a.active:after{transform:scaleX(1);transform-origin:left}
+.btn{display:inline-flex;align-items:center;gap:14px;padding:18px 32px;border-radius:999px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;cursor:pointer;border:0;transition:all .5s var(--ease);font-family:Manrope,sans-serif;position:relative;overflow:hidden;isolation:isolate}
+.btn:before{content:"";position:absolute;inset:0;border-radius:inherit;transform:translateY(101%);transition:transform .6s var(--ease);z-index:-1}
+.btn:hover:before{transform:none}
+.btn-gold{background:var(--gold);color:var(--night)}.btn-gold:before{background:var(--ivory)}
+.btn-line{border:1px solid rgba(245,240,231,.35);color:var(--ivory)}.btn-line:before{background:var(--ivory)}.btn-line:hover{color:var(--night)}
+.btn-dark{background:var(--night);color:var(--ivory)}.btn-dark:before{background:var(--gold)}.btn-dark:hover{color:var(--night)}
+.btn-line-d{border:1px solid var(--ink);color:var(--ink)}.btn-line-d:before{background:var(--ink)}.btn-line-d:hover{color:var(--ivory)}
+.arrow{width:18px;height:1px;background:currentColor;position:relative;transition:width .4s var(--ease)}
+.arrow:after{content:"";position:absolute;right:0;top:-3px;width:7px;height:7px;border-top:1px solid currentColor;border-right:1px solid currentColor;transform:rotate(45deg)}
+.btn:hover .arrow{width:28px}
+.nav .btn{padding:13px 24px;font-size:11px}
+.burger{display:none;background:none;border:0;cursor:pointer;width:44px;height:44px;position:relative;z-index:2}
+.burger i{position:absolute;left:9px;right:9px;height:1px;background:var(--ivory);transition:.5s var(--ease)}
+.burger i:nth-child(1){top:17px}.burger i:nth-child(2){top:26px}
+.burger.x i:nth-child(1){top:22px;transform:rotate(45deg)}.burger.x i:nth-child(2){top:22px;transform:rotate(-45deg)}
+
+/* pages & reveal */
+.page{display:none}.page.on{display:block}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.mask{clip-path:inset(100% 0 0 0);transition:clip-path 1.6s var(--ease)}
+.mask img{transform:scale(1.25);transition:transform 2.2s var(--ease)}
+.mask.in{clip-path:inset(0 0 0 0)}.mask.in img{transform:scale(1)}
+.split-words .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em}
+.split-words .w>span{display:inline-block;transform:translateY(110%);transition:transform 1.2s var(--ease)}
+.split-words.in .w>span{transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+@keyframes up{to{transform:none}}
+
+/* hero */
+.hero{height:100vh;min-height:760px;position:relative;overflow:hidden;color:var(--ivory);background:var(--night)}
+.hero-media{position:absolute;inset:0;will-change:transform}
+.hero-media img{transform:scale(1.15);animation:heroZoom 3s var(--ease) .2s forwards}
+@keyframes heroZoom{to{transform:scale(1.02)}}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,21,20,.92) 0%,rgba(11,21,20,.65) 45%,rgba(11,21,20,.15) 100%),linear-gradient(0deg,rgba(11,21,20,.85) 0%,transparent 40%)}
+.hero-in{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;padding-top:90px;padding-bottom:110px}
+.hero h1{font-size:clamp(54px,min(8.4vw,13vh),128px);font-weight:300;margin:24px 0 28px;max-width:900px}
+.hero h1 .ln{display:block;overflow:hidden;padding-bottom:.06em}
+.hero h1 .ln span{display:block;transform:translateY(110%)}
+body.ready .hero h1 .ln span{animation:up 1.4s var(--ease) forwards}
+body.ready .hero h1 .ln:nth-child(2) span{animation-delay:.12s}body.ready .hero h1 .ln:nth-child(3) span{animation-delay:.24s}
+.hero p.lead{font-size:17px;font-weight:300;color:rgba(245,240,231,.75);max-width:500px;margin-bottom:44px}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap}
+.hero-foot{position:absolute;left:0;right:0;bottom:0;z-index:2;border-top:1px solid var(--line-d)}
+.hero-foot .wrap{display:grid;grid-template-columns:repeat(3,1fr) auto;align-items:center}
+.hb{padding:26px 0 26px 28px;font-size:12.5px;color:rgba(245,240,231,.55);border-left:1px solid var(--line-d)}
+.hb:first-child{padding-left:0;border:0}
+.hb b{display:block;color:var(--ivory);font-weight:500;font-size:14px}
+.scroll-cue{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:rgba(245,240,231,.55);display:flex;align-items:center;gap:14px;padding-left:28px}
+.scroll-cue i{width:1px;height:44px;background:var(--line-d);position:relative;overflow:hidden}
+.scroll-cue i:after{content:"";position:absolute;left:0;top:0;width:1px;height:50%;background:var(--gold);animation:cue 2s var(--ease2) infinite}
+@keyframes cue{from{transform:translateY(-100%)}to{transform:translateY(200%)}}
+.illu{position:absolute;right:32px;top:calc(var(--bar,32px) + 110px);z-index:2;font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:rgba(245,240,231,.45);writing-mode:vertical-rl}
+
+/* marquee */
+.marquee{background:var(--night);color:var(--ivory);border-top:1px solid var(--line-d);overflow:hidden;padding:30px 0;white-space:nowrap}
+.marquee .track{display:inline-flex;animation:mq 40s linear infinite}
+.marquee span{font-family:"Cormorant Garamond",serif;font-size:clamp(30px,3.6vw,48px);font-weight:300;padding:0 34px;display:inline-flex;align-items:center;gap:68px}
+.marquee span:after{content:"✦";font-size:14px;color:var(--gold)}
+.marquee span:nth-child(even){font-style:italic;color:var(--gold-2)}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+section{padding:150px 0;position:relative}
+.h2{font-size:clamp(44px,5.6vw,84px);font-weight:300;margin:24px 0 28px}
+.lead{font-size:17px;font-weight:300;color:var(--muted);max-width:540px}
+.dark{background:var(--night);color:var(--ivory)}.dark .lead{color:rgba(245,240,231,.62)}
+.ivory2{background:var(--ivory-2)}
+
+/* intro editorial */
+.intro{display:grid;grid-template-columns:5fr 7fr;gap:90px;align-items:start}
+.intro-big{font-family:"Cormorant Garamond",serif;font-size:clamp(32px,3.6vw,54px);font-weight:300;line-height:1.18}
+.intro-imgs{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:70px;align-items:end}
+.ph-frame{position:relative;overflow:hidden;background:var(--stone)}
+.cap{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-top:14px;display:flex;justify-content:space-between}
+.values{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin-top:120px}
+.val{padding:48px 44px 10px 0;border-right:1px solid var(--line)}
+.val+.val{padding-left:44px}.val:last-child{border:0}
+.val .n{font-family:"Cormorant Garamond",serif;font-size:15px;color:var(--gold);letter-spacing:.1em;font-style:italic}
+.val h3{font-size:38px;margin:16px 0 14px}
+.val p{color:var(--muted);font-size:15px;font-weight:300}
+
+/* treatments interactive */
+.tw{display:grid;grid-template-columns:1fr 420px;gap:80px;margin-top:70px;align-items:start}
+.tlist{border-top:1px solid var(--line-d)}
+.trow{display:grid;grid-template-columns:70px 1fr auto;align-items:center;gap:24px;padding:30px 0;border-bottom:1px solid var(--line-d);position:relative;cursor:pointer}
+.trow .n{font-family:"Cormorant Garamond",serif;color:var(--gold);font-size:17px;font-style:italic}
+.trow h3{font-size:clamp(30px,3.2vw,48px);transition:transform .7s var(--ease),color .5s}
+.trow .go{width:48px;height:48px;border:1px solid var(--line-d);border-radius:50%;display:grid;place-items:center;transition:.5s var(--ease)}
+.trow p{grid-column:2/4;color:rgba(245,240,231,.6);font-size:15px;font-weight:300;max-height:0;overflow:hidden;opacity:0;transition:max-height .8s var(--ease),opacity .6s,margin .8s var(--ease)}
+.trow.act h3,.trow:hover h3{transform:translateX(14px);color:var(--gold-2)}
+.trow.act p{max-height:120px;opacity:1;margin-top:4px}
+.trow.act .go,.trow:hover .go{background:var(--gold);border-color:var(--gold);color:var(--night);transform:rotate(45deg)}
+.tsticky{position:sticky;top:120px;aspect-ratio:4/5;overflow:hidden}
+.tsticky img{position:absolute;inset:0;opacity:0;transform:scale(1.08);transition:opacity 1s var(--ease),transform 1.6s var(--ease)}
+.tsticky img.on{opacity:1;transform:scale(1)}
+.light .tlist{border-color:var(--line)}.light .trow{border-color:var(--line)}.light .trow p{color:var(--muted)}.light .trow .go{border-color:var(--line)}
+.light .trow.act h3,.light .trow:hover h3{color:var(--forest)}
+
+/* full-bleed parallax */
+.bleed{height:110vh;position:relative;overflow:hidden;color:var(--ivory);display:flex;align-items:center}
+.bleed .bm{position:absolute;inset:-12% 0;will-change:transform}
+.bleed:after{content:"";position:absolute;inset:0;background:rgba(11,21,20,.55)}
+.bleed blockquote{position:relative;z-index:2;font-family:"Cormorant Garamond",serif;font-size:clamp(36px,5vw,76px);font-weight:300;line-height:1.12;max-width:1050px}
+.bleed .sig{position:relative;z-index:2;margin-top:40px;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-2)}
+
+/* split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+.frame-wrap{position:relative}
+.frame-wrap .ph-frame{aspect-ratio:4/5}
+.frame-wrap:after{content:"";position:absolute;inset:30px -30px -30px 30px;border:1px solid var(--gold);z-index:-1;opacity:.6}
+.ticks{list-style:none;margin-top:34px;border-top:1px solid var(--line)}
+.ticks li{padding:18px 0;border-bottom:1px solid var(--line);display:flex;gap:20px;font-size:15.5px}
+.ticks li:before{content:"—";color:var(--gold)}
+
+/* horizontal gallery */
+.hgal{height:300vh;position:relative;background:var(--night)}
+.hgal .stick{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.hgal .head{padding:0 32px;max-width:1320px;margin:0 auto 50px;width:100%;color:var(--ivory);display:flex;justify-content:space-between;align-items:end;gap:30px}
+.hgal .head h2{font-size:clamp(40px,5vw,72px);font-weight:300;margin-top:18px}
+.hgal .prog{width:200px;height:1px;background:var(--line-d);position:relative}
+.hgal .prog i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);width:0}
+.hgal .rail{display:flex;gap:28px;padding-left:max(32px,calc((100vw - 1320px)/2 + 32px));will-change:transform}
+.hgal figure{flex:none;width:min(46vw,640px);color:var(--ivory)}
+.hgal figure.tall{width:min(30vw,420px)}
+.hgal figure .ph-frame{height:58vh}
+.hgal figcaption{margin-top:16px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:rgba(245,240,231,.55)}
+.hgal figcaption b{font-family:"Cormorant Garamond",serif;font-size:24px;letter-spacing:0;text-transform:none;color:var(--ivory);font-weight:400}
+
+/* process */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);margin-top:80px;position:relative}
+.steps .ln{position:absolute;left:0;right:0;top:28px;height:1px;background:var(--line)}
+.steps .ln i{position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform 2.4s var(--ease)}
+.steps.in .ln i{transform:scaleX(1)}
+.step{padding-right:34px;position:relative}
+.step .c{width:57px;height:57px;border-radius:50%;border:1px solid var(--gold);background:var(--ivory);display:grid;place-items:center;font-family:"Cormorant Garamond",serif;font-size:21px;font-style:italic;color:var(--gold);margin-bottom:30px;position:relative}
+.step h3{font-size:32px;margin-bottom:12px}
+.step p{font-size:15px;color:var(--muted);font-weight:300}
+
+/* cta */
+.cta{background:var(--forest);color:var(--ivory);text-align:center;overflow:hidden;padding:170px 0}
+.cta .bgimg{position:absolute;inset:0;opacity:.18}
+.cta h2{font-size:clamp(46px,6.6vw,104px);font-weight:300;max-width:1000px;margin:26px auto 44px;position:relative}
+.cta .cta-row{justify-content:center;position:relative}
+.cta .kicker{position:relative}
+
+/* page hero */
+.phero{color:var(--ivory);padding:230px 0 120px;position:relative;overflow:hidden;background:var(--night)}
+.phero .pbg{position:absolute;inset:0;opacity:.32}
+.phero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--night),rgba(11,21,20,.4))}
+.phero .wrap{position:relative;z-index:2}
+.phero h1{font-size:clamp(58px,8.6vw,130px);font-weight:300;margin-top:26px}
+.phero .lead{color:rgba(245,240,231,.68);margin-top:26px}
+.crumb{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:rgba(245,240,231,.45)}
+
+/* faq */
+.faq details{border-bottom:1px solid var(--line);padding:30px 0}
+.faq summary{font-family:"Cormorant Garamond",serif;font-size:30px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:after{content:"+";font-family:Manrope;font-weight:300;font-size:26px;color:var(--gold);transition:transform .5s var(--ease)}
+.faq details[open] summary:after{transform:rotate(45deg)}
+.faq details p{color:var(--muted);margin-top:14px;font-weight:300;max-width:620px}
+
+/* contacts */
+.cinfo{border-top:1px solid var(--line)}
+.crow{display:grid;grid-template-columns:150px 1fr;padding:28px 0;border-bottom:1px solid var(--line);gap:20px;align-items:baseline}
+.crow small{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
+.crow b{font-family:"Cormorant Garamond",serif;font-size:32px;font-weight:400;line-height:1.15}
+.ph{background:rgba(184,149,106,.2);color:#8a6a3f;padding:1px 7px;border-radius:3px;font-family:Manrope,sans-serif;font-size:12px;vertical-align:middle;letter-spacing:0;font-style:normal;font-weight:500}
+form{background:var(--night);color:var(--ivory);padding:60px;position:relative}
+form h3{font-size:46px;font-weight:300;margin-bottom:10px}
+form>p{color:rgba(245,240,231,.6);font-weight:300;margin-bottom:24px}
+.field{position:relative;margin-top:30px}
+.field input,.field select{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line-d);padding:14px 0;color:var(--ivory);font:inherit;font-size:16px;outline:0;border-radius:0;-webkit-appearance:none}
+.field select option{color:#000}
+.field:after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease)}
+.field:focus-within:after{transform:scaleX(1)}
+.field label{position:absolute;left:0;top:14px;font-size:15px;color:rgba(245,240,231,.5);pointer-events:none;transition:.4s var(--ease)}
+.field input:focus+label,.field input:not(:placeholder-shown)+label{top:-12px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.field .static{position:static;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:block}
+.consent{display:flex;gap:12px;font-size:12px;color:rgba(245,240,231,.55);margin-top:30px;align-items:flex-start;cursor:pointer}
+.consent input{accent-color:var(--gold);margin-top:3px}
+.ok{display:none;border:1px solid var(--gold);color:var(--gold-2);padding:16px;margin-top:20px;font-size:14px}
+
+/* footer */
+footer{background:#060c0b;color:rgba(245,240,231,.55);padding:130px 0 40px;font-size:14px;overflow:hidden}
+.big-name{font-family:"Cormorant Garamond",serif;font-size:clamp(60px,12.5vw,200px);color:var(--ivory);line-height:.9;font-weight:300;letter-spacing:-.03em;border-bottom:1px solid var(--line-d);padding-bottom:60px;margin-bottom:64px}
+.fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:50px;margin-bottom:70px}
+footer h4{font-size:10.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:20px}
+footer a{display:block;padding:4px 0;cursor:pointer;transition:color .3s}
+footer a:hover{color:var(--ivory)}
+.legal{border-top:1px solid var(--line-d);padding-top:30px;font-size:12px;line-height:1.95}
+.legal .ph{background:rgba(184,149,106,.15);color:var(--gold-2)}
+
+.wa-float{position:fixed;right:24px;bottom:24px;z-index:80;width:62px;height:62px;border-radius:50%;background:var(--gold);display:grid;place-items:center;box-shadow:0 16px 36px rgba(0,0,0,.3);transition:transform .5s var(--ease)}
+.wa-float:hover{transform:scale(1.08)}
+.wa-float:before{content:"";position:absolute;inset:-7px;border:1px solid var(--gold);border-radius:50%;animation:ring 2.8s infinite}
+@keyframes ring{from{transform:scale(.88);opacity:1}to{transform:scale(1.4);opacity:0}}
+
+.mnav{display:none}
+@media (max-width:980px){
+  nav.menu,.nav .btn{display:none}.burger{display:block}
+  .mnav{display:flex;flex-direction:column;justify-content:center;position:fixed;inset:0;background:var(--night);z-index:55;padding:100px 30px 40px;clip-path:circle(0% at calc(100% - 52px) 60px);transition:clip-path 1s var(--ease2)}
+  .mnav.open{clip-path:circle(150% at calc(100% - 52px) 60px)}
+  .mnav a{font-family:"Cormorant Garamond",serif;color:var(--ivory);font-size:46px;font-weight:300;line-height:1.3;cursor:pointer}
+  .mnav a span{font-family:Manrope;font-size:11px;color:var(--gold);margin-right:18px;letter-spacing:.1em;vertical-align:middle}
+  .mnav .btn{margin-top:44px;justify-content:center;font-family:Manrope;font-size:12px}
+  .intro,.split,.fgrid,.tw{grid-template-columns:1fr}.intro{gap:40px}
+  .tsticky{display:none}
+  .hero-foot .wrap{grid-template-columns:1fr 1fr}.hb:nth-child(3),.scroll-cue{display:none}
+  .illu{display:none}
+  .values{grid-template-columns:1fr;margin-top:80px}.val,.val+.val{padding:38px 0 22px;border-right:0;border-bottom:1px solid var(--line)}
+  .trow{grid-template-columns:44px 1fr auto;gap:6px 16px;padding:26px 0}
+  .trow .go{width:38px;height:38px}
+  .steps{grid-template-columns:1fr 1fr;gap:46px 20px}.steps .ln{display:none}
+  section{padding:100px 0}.split{gap:70px}
+  .frame-wrap:after{inset:16px -12px -16px 16px}
+  form{padding:40px 26px}
+  .crow{grid-template-columns:1fr;gap:4px}
+  .phero{padding:180px 0 90px}
+  .hgal{height:auto}.hgal .stick{position:relative;height:auto;padding:100px 0}
+  .hgal .rail{overflow-x:auto;scroll-snap-type:x mandatory;padding-right:32px;transform:none!important;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .hgal .rail::-webkit-scrollbar{display:none}
+  .hgal figure,.hgal figure.tall{width:78vw;scroll-snap-align:start}
+  .hgal figure .ph-frame{height:52vh}.hgal .prog{display:none}
+  .bleed{height:80vh}
+  .cta{padding:120px 0}
+}
+@media (max-width:560px){.steps{grid-template-columns:1fr}.hero-foot .wrap{grid-template-columns:1fr}.hb:nth-child(2){display:none}.intro-imgs{grid-template-columns:1fr}.intro-imgs>div:last-child{display:none}}
+
+/* 3D */
+.hero-media img{opacity:.28;filter:blur(2px) saturate(.8)}
+.hero:after{background:radial-gradient(ellipse at 72% 50%,rgba(27,53,49,.35) 0%,rgba(11,21,20,.85) 60%),linear-gradient(0deg,rgba(11,21,20,.9) 0%,transparent 40%)!important}
+.hero-3d{position:absolute;z-index:1;top:0;bottom:0;right:0;width:58%;cursor:grab;touch-action:pan-y}
+.hero-3d:active{cursor:grabbing}
+.hero-3d canvas{display:block;width:100%!important;height:100%!important;opacity:0;transition:opacity 2s var(--ease)}
+.hero-3d.live canvas{opacity:1}
+.hint3d{position:absolute;right:40px;bottom:120px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(245,240,231,.45);display:flex;align-items:center;gap:12px;pointer-events:none}
+.hint3d:before{content:"";width:26px;height:26px;border:1px solid rgba(184,149,106,.6);border-radius:50%;background:radial-gradient(circle,var(--gold) 2px,transparent 3px)}
+.hero .wrap.hero-in{pointer-events:none}.hero .wrap.hero-in a,.hero .wrap.hero-in .btn{pointer-events:auto}
+.x3d{height:320vh;position:relative;background:radial-gradient(ellipse at 60% 50%,#16302c 0%,var(--night) 65%);color:var(--ivory)}
+.x3d .stick{position:sticky;top:0;height:100vh;overflow:hidden}
+.x3d canvas{position:absolute;inset:0;width:100%!important;height:100%!important}
+.x3d .txt{position:absolute;left:max(32px,calc((100vw - 1320px)/2 + 32px));top:50%;transform:translateY(-50%);max-width:440px;z-index:2;pointer-events:none}
+.x3d .txt h2{font-size:clamp(40px,4.6vw,70px);font-weight:300;margin:22px 0 22px}
+.x3d .txt p{color:rgba(245,240,231,.62);font-weight:300}
+.x3d .lbl{position:absolute;z-index:2;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-2);display:flex;align-items:center;gap:14px;opacity:0;transition:opacity .6s;pointer-events:none;white-space:nowrap}
+.x3d .lbl:before{content:"";width:50px;height:1px;background:var(--gold)}
+.x3d .lbl b{font-family:"Cormorant Garamond",serif;font-size:22px;letter-spacing:0;text-transform:none;color:var(--ivory);font-weight:400;display:block}
+.x3d .lbl small{display:block;font-size:10px;color:rgba(245,240,231,.5)}
+.x3d .pbar{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);width:160px;height:1px;background:var(--line-d);z-index:2}
+.x3d .pbar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);width:0}
+.x3d .note{position:absolute;left:max(32px,calc((100vw - 1320px)/2 + 32px));bottom:40px;z-index:2;font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:rgba(245,240,231,.35)}
+@media (max-width:980px){
+ .hero-3d{width:100%;opacity:.38;top:30%}.hint3d{display:none}
+ .x3d{height:260vh}
+ .x3d .txt{top:110px;transform:none;left:28px;right:28px}
+ .x3d .txt h2{font-size:38px;margin:14px 0 10px}.x3d .txt p{font-size:14px}
+ .x3d .lbl:before{width:22px}.x3d .lbl b{font-size:18px}
+}
+
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.mask{clip-path:none}.mask img{transform:none}.split-words .w>span,.hero h1 .ln span{transform:none}#pre{display:none}}
+</style>
+</head>
+<body class="lock">
+<div id="pre"><div class="pname"><span>Ceparano</span></div><div class="bar"></div></div>
+<div id="curtain"></div>
+<div class="grain"></div>
+<div class="cur" id="cur"><span>Apri</span></div>
+<div class="demo-bar"><b>Anteprima gratuita</b> realizzata da Dental Go per lo Studio Dentistico Ceparano · immagini illustrative, testi definitivi da concordare</div>
+
+<header id="hdr">
+  <div class="wrap nav">
+    <a class="logo" data-go="home">
+      <span class="logo-mark"><svg width="20" height="22" viewBox="0 0 24 26" fill="none"><path d="M12 3.5c-2-1.6-4.6-2.1-6.6-1C2.8 4 2.3 7.4 3 10.4c.6 2.6 1.4 4.8 1.9 7.6.4 2.4.9 5.5 2.6 5.5 1.9 0 2-3.9 2.6-6 .4-1.3 1-1.8 1.9-1.8s1.5.5 1.9 1.8c.6 2.1.7 6 2.6 6 1.7 0 2.2-3.1 2.6-5.5.5-2.8 1.3-5 1.9-7.6.7-3-.2-6.4-2.4-7.9-2-1.1-4.6-.6-6.6 1Z" stroke="#b8956a" stroke-width="1.1" stroke-linejoin="round"/></svg></span>
+      <span><b>CEPARANO</b><span>Studio Dentistico</span></span>
+    </a>
+    <nav class="menu"><a data-go="home">Home</a><a data-go="studio">Lo Studio</a><a data-go="trattamenti">Trattamenti</a><a data-go="prima-visita">Prima visita</a><a data-go="contatti">Contatti</a></nav>
+    <a class="btn btn-gold" href="https://wa.me/393387196422" target="_blank" rel="noopener">Prenota</a>
+    <button class="burger" id="burger" aria-label="Menu"><i></i><i></i></button>
+  </div>
+</header>
+<div class="mnav" id="mnav">
+  <a data-go="home"><span>01</span>Home</a><a data-go="studio"><span>02</span>Lo Studio</a><a data-go="trattamenti"><span>03</span>Trattamenti</a><a data-go="prima-visita"><span>04</span>Prima visita</a><a data-go="contatti"><span>05</span>Contatti</a>
+  <a class="btn btn-gold" href="https://wa.me/393387196422" target="_blank" rel="noopener">Scrivici su WhatsApp</a>
+</div>
+
+<main>
+<!-- ================= HOME ================= -->
+<div class="page" id="p-home">
+  <section class="hero" style="padding:0">
+    <div class="hero-media" data-par="0.25"><img src="img/room.jpg" alt=""></div>
+    <div class="hero-3d" id="tooth3d"><div class="hint3d">Trascina per ruotare</div></div>
+    <div class="wrap hero-in">
+      <span class="kicker reveal">Studio dentistico · Sant'Antimo</span>
+      <h1><span class="ln"><span>L'arte di</span></span><span class="ln"><span>prendersi <em>cura</em></span></span><span class="ln"><span>del sorriso.</span></span></h1>
+      <p class="lead reveal d2">Uno studio su appuntamento, dove ogni paziente ha il tempo che merita: ascolto, diagnosi accurata e un piano di cure spiegato con chiarezza.</p>
+      <div class="cta-row reveal d3">
+        <a class="btn btn-gold" href="https://wa.me/393387196422" target="_blank" rel="noopener">Prenota una visita <span class="arrow"></span></a>
+        <a class="btn btn-line" data-go="studio">Scopri lo studio</a>
+      </div>
+    </div>
+    <div class="hero-foot"><div class="wrap">
+      <div class="hb"><b>Corso Michelangelo, 30</b>Sant'Antimo (NA)</div>
+      <div class="hb"><b>338 719 6422</b>Telefono e WhatsApp</div>
+      <div class="hb"><b>Su appuntamento</b>Adulti e bambini</div>
+      <div class="scroll-cue">Scorri <i></i></div>
+    </div></div>
+  </section>
+
+  <div class="marquee"><div class="track" id="mq"></div></div>
+
+  <section>
+    <div class="wrap">
+      <div class="intro">
+        <div><span class="kicker reveal">Lo studio</span></div>
+        <div>
+          <p class="intro-big split-words" data-split>Un luogo pensato per sentirsi a proprio agio. Qui ogni scelta viene spiegata, condivisa e decisa insieme, con il tempo che serve.</p>
+          <div class="reveal d2" style="margin-top:40px"><a class="btn btn-line-d" data-go="studio">Conosci lo studio <span class="arrow"></span></a></div>
+        </div>
+      </div>
+      <div class="intro-imgs">
+        <div><div class="ph-frame mask" style="aspect-ratio:16/10" data-cur="Studio"><img src="img/lounge.jpg" alt="Sala d'attesa (immagine illustrativa)"></div><div class="cap"><span>La sala d'attesa</span><span>01</span></div></div>
+        <div style="width:72%;justify-self:end"><div class="ph-frame mask" style="aspect-ratio:4/5"><img src="img/reception.jpg" alt="Accoglienza (immagine illustrativa)"></div><div class="cap"><span>L'accoglienza</span><span>02</span></div></div>
+      </div>
+      <div class="values">
+        <div class="val reveal"><span class="n">i.</span><h3>Tempo</h3><p>Lavoriamo su appuntamento per dedicare a ciascuno la giusta attenzione, senza attese e senza fretta.</p></div>
+        <div class="val reveal d1"><span class="n">ii.</span><h3>Chiarezza</h3><p>Opzioni di trattamento spiegate con parole semplici e preventivi scritti, voce per voce.</p></div>
+        <div class="val reveal d2"><span class="n">iii.</span><h3>Cura</h3><p>Strumenti sterilizzati secondo protocollo, materiali monouso e ambienti sanificati tra un paziente e l'altro.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dark">
+    <div class="wrap">
+      <div class="split" style="align-items:end;gap:40px">
+        <div><span class="kicker reveal">Trattamenti</span><h2 class="h2 split-words" data-split>Ogni esigenza, un solo studio.</h2></div>
+        <p class="lead reveal d2">Dalla prevenzione alla riabilitazione: in visita valutiamo insieme il percorso più adatto a te.</p>
+      </div>
+      <div class="tw">
+        <div class="tlist" id="home-treat"></div>
+        <div class="tsticky" id="tsticky"></div>
+      </div>
+      <div style="margin-top:56px" class="reveal"><a class="btn btn-line" data-go="trattamenti">Tutti i trattamenti <span class="arrow"></span></a></div>
+    </div>
+  </section>
+
+  <div class="x3d" id="x3d">
+    <div class="stick">
+      <div class="txt"><span class="kicker">Implantologia · vista 3D</span><h2>Com'è fatto <em>un impianto.</em></h2><p>Scorri per scomporre i tre elementi: la vite in titanio, il moncone di collegamento e la corona in ceramica. In visita valutiamo insieme se è la soluzione adatta a te.</p></div>
+      <div class="lbl" id="l0"><div><b>Corona</b><small>Ceramica, del colore del dente</small></div></div>
+      <div class="lbl" id="l1"><div><b>Moncone</b><small>Collega la corona alla vite</small></div></div>
+      <div class="lbl" id="l2"><div><b>Vite implantare</b><small>Titanio biocompatibile</small></div></div>
+      <div class="pbar"><i id="xbar"></i></div>
+      <div class="note">Modello illustrativo</div>
+    </div>
+  </div>
+
+  <section style="background:var(--ivory)">
+    <div class="wrap">
+      <span class="kicker reveal">Il percorso</span>
+      <h2 class="h2 split-words" data-split>Dal primo messaggio al tuo sorriso.</h2>
+      <div class="steps reveal-steps">
+        <div class="ln"><i></i></div>
+        <div class="step reveal"><div class="c">01</div><h3>Contatto</h3><p>Ci scrivi su WhatsApp o chiami: fissiamo insieme giorno e orario.</p></div>
+        <div class="step reveal d1"><div class="c">02</div><h3>Prima visita</h3><p>Controllo completo e, se necessari, esami diagnostici.</p></div>
+        <div class="step reveal d2"><div class="c">03</div><h3>Piano di cure</h3><p>Ti illustriamo le opzioni e ricevi un preventivo scritto.</p></div>
+        <div class="step reveal d3"><div class="c">04</div><h3>Nel tempo</h3><p>Ti ricordiamo noi i richiami di igiene e controllo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="hgal" id="hgal">
+    <div class="stick">
+      <div class="head"><div><span class="kicker">Gli ambienti</span><h2>Uno sguardo <em>allo studio</em></h2></div><div class="prog"><i id="hprog"></i></div></div>
+      <div class="rail" id="rail">
+        <figure><div class="ph-frame"><img src="img/lounge.jpg" alt=""></div><figcaption><b>Sala d'attesa</b><span>01 / 06</span></figcaption></figure>
+        <figure class="tall"><div class="ph-frame"><img src="img/room.jpg" alt=""></div><figcaption><b>Sala trattamenti</b><span>02 / 06</span></figcaption></figure>
+        <figure class="tall"><div class="ph-frame"><img src="img/reception.jpg" alt=""></div><figcaption><b>Accoglienza</b><span>03 / 06</span></figcaption></figure>
+        <figure><div class="ph-frame"><img src="img/corridor.jpg" alt=""></div><figcaption><b>Gli spazi</b><span>04 / 06</span></figcaption></figure>
+        <figure class="tall"><div class="ph-frame"><img src="img/tools.jpg" alt=""></div><figcaption><b>Strumentario sterile</b><span>05 / 06</span></figcaption></figure>
+        <figure class="tall"><div class="ph-frame"><img src="img/detail-chair.jpg" alt=""></div><figcaption><b>Il riunito</b><span>06 / 06</span></figcaption></figure>
+      </div>
+    </div>
+  </div>
+
+  <section class="cta">
+    <div class="bgimg"><img src="img/lounge.jpg" alt=""></div>
+    <div class="wrap">
+      <span class="kicker reveal">Prenota</span>
+      <h2 class="split-words" data-split>Il tuo prossimo appuntamento inizia con un messaggio.</h2>
+      <div class="cta-row reveal d2"><a class="btn btn-gold" href="https://wa.me/393387196422" target="_blank" rel="noopener">Scrivici su WhatsApp <span class="arrow"></span></a><a class="btn btn-line" data-go="contatti">Contatti</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= STUDIO ================= -->
+<div class="page" id="p-studio">
+  <div class="phero"><div class="pbg"><img src="img/reception.jpg" alt=""></div><div class="wrap"><div class="crumb">Home / Lo Studio</div><h1>Lo <em>Studio</em></h1><p class="lead">Uno studio a misura di paziente, nel cuore di Sant'Antimo.</p></div></div>
+  <section>
+    <div class="wrap split">
+      <div class="frame-wrap"><div class="ph-frame mask"><img src="img/lounge.jpg" alt="Sala d'attesa (immagine illustrativa)"></div></div>
+      <div>
+        <span class="kicker reveal">Chi siamo</span>
+        <h2 class="h2 split-words" data-split>Il dentista che ti conosce per nome.</h2>
+        <p class="lead reveal d2" style="margin-bottom:18px">Lo Studio Dentistico Ceparano accoglie i pazienti di Sant'Antimo e dei comuni vicini con un approccio semplice: tempo per ascoltare, diagnosi accurata e cure spiegate passo dopo passo.</p>
+        <ul class="ticks reveal d3"><li>Visite su appuntamento</li><li>Preventivi scritti e dettagliati</li><li>Percorsi per adulti e bambini</li><li>Richiami periodici di igiene e controllo</li></ul>
+      </div>
+    </div>
+  </section>
+  <section class="ivory2">
+    <div class="wrap split">
+      <div style="order:2" class="frame-wrap"><div class="ph-frame mask" style="background:linear-gradient(160deg,#3b6a63,#1b3531 55%,#0b1514);display:grid;place-items:center"><div style="text-align:center;color:var(--gold-2);font-size:10.5px;letter-spacing:.3em;text-transform:uppercase"><svg width="90" height="90" viewBox="0 0 100 100" fill="none" stroke="#b8956a" stroke-width=".8" style="margin:0 auto 18px;display:block"><circle cx="50" cy="38" r="18"/><path d="M18 92c3-22 16-34 32-34s29 12 32 34"/></svg>Qui il ritratto del dottore</div></div></div>
+      <div style="order:1">
+        <span class="kicker reveal">Il dottore</span>
+        <h2 class="h2 reveal d1">Dott. <span class="ph">[Nome]</span> <em>Ceparano</em></h2>
+        <p class="lead reveal d2" style="margin-bottom:18px">Odontoiatra, iscritto all'Albo degli Odontoiatri di Napoli <span class="ph">[n. iscrizione]</span>.</p>
+        <p class="lead reveal d3"><span class="ph">[Breve presentazione: formazione, anni di attività, aree di interesse. La scriviamo noi insieme al dottore.]</span></p>
+      </div>
+    </div>
+  </section>
+  <section style="padding-top:0;padding-bottom:0"><div class="bleed" style="height:80vh"><div class="bm" data-par="0.15"><img src="img/corridor.jpg" alt=""></div><div class="wrap"><blockquote class="split-words" data-split>Ambienti luminosi, riservati e sanificati.</blockquote></div></div></section>
+</div>
+
+<!-- ================= TRATTAMENTI ================= -->
+<div class="page" id="p-trattamenti">
+  <div class="phero"><div class="pbg"><img src="img/tools.jpg" alt=""></div><div class="wrap"><div class="crumb">Home / Trattamenti</div><h1>I <em>trattamenti</em></h1><p class="lead">Una panoramica delle cure. In visita valutiamo insieme il percorso adatto alla tua situazione.</p></div></div>
+  <section class="light"><div class="wrap"><div class="tlist" id="all-treat"></div></div></section>
+  <section class="cta"><div class="bgimg"><img src="img/room.jpg" alt=""></div><div class="wrap"><span class="kicker">Informazioni</span><h2 class="split-words" data-split>Hai una domanda su un trattamento?</h2><div class="cta-row"><a class="btn btn-gold" href="https://wa.me/393387196422" target="_blank" rel="noopener">Chiedi su WhatsApp <span class="arrow"></span></a></div></div></section>
+</div>
+
+<!-- ================= PRIMA VISITA ================= -->
+<div class="page" id="p-prima-visita">
+  <div class="phero"><div class="pbg"><img src="img/detail-chair.jpg" alt=""></div><div class="wrap"><div class="crumb">Home / Prima visita</div><h1>La prima <em>visita</em></h1><p class="lead">Tutto quello che c'è da sapere prima di venire in studio.</p></div></div>
+  <section>
+    <div class="wrap split" style="align-items:start">
+      <div>
+        <span class="kicker reveal">Come si svolge</span>
+        <h2 class="h2 split-words" data-split>Un incontro, senza fretta.</h2>
+        <ul class="ticks reveal d2"><li>Colloquio sulla tua storia clinica e sulle tue esigenze</li><li>Controllo di denti, gengive e occlusione</li><li>Eventuali esami diagnostici, se necessari</li><li>Spiegazione delle opzioni di trattamento</li><li>Preventivo scritto e dettagliato</li></ul>
+        <h3 class="reveal" style="font-size:36px;margin:56px 0 12px">Cosa portare</h3>
+        <p class="lead reveal">Documento d'identità, tessera sanitaria, eventuali radiografie o esami recenti e l'elenco dei farmaci che assumi.</p>
+      </div>
+      <div class="faq reveal d2">
+        <span class="kicker">Domande frequenti</span>
+        <details open><summary>Quanto dura la prima visita?</summary><p>In genere 30–45 minuti, per avere il tempo di ascoltarti e spiegarti tutto con calma.</p></details>
+        <details><summary>Ricevo subito un preventivo?</summary><p>Sì, al termine della visita ti consegniamo un preventivo scritto con le voci dettagliate.</p></details>
+        <details><summary>Posso portare anche i bambini?</summary><p>Certo. Consigliamo una prima visita già nei primi anni di vita, per abituarli con serenità.</p></details>
+        <details><summary>Come prenoto?</summary><p>Scrivici su WhatsApp o chiama il 338 719 6422: ti proponiamo il primo orario disponibile.</p></details>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= CONTATTI ================= -->
+<div class="page" id="p-contatti">
+  <div class="phero"><div class="pbg"><img src="img/corridor.jpg" alt=""></div><div class="wrap"><div class="crumb">Home / Contatti</div><h1>Vieni a <em>trovarci</em></h1><p class="lead">Corso Michelangelo 30, Sant'Antimo.</p></div></div>
+  <section>
+    <div class="wrap split" style="align-items:start">
+      <div>
+        <div class="cinfo reveal">
+          <div class="crow"><small>Indirizzo</small><b>Corso Michelangelo, 30<br>80029 Sant'Antimo (NA)</b></div>
+          <div class="crow"><small>Telefono</small><b>338 719 6422</b></div>
+          <div class="crow"><small>WhatsApp</small><b>338 719 6422</b></div>
+          <div class="crow"><small>Orari</small><b>Su appuntamento <span class="ph">[orari da inserire]</span></b></div>
+        </div>
+        <div class="cta-row reveal d1" style="margin-top:44px">
+          <a class="btn btn-dark" href="https://wa.me/393387196422" target="_blank" rel="noopener">WhatsApp <span class="arrow"></span></a>
+          <a class="btn btn-line-d" href="https://www.google.com/maps/search/?api=1&query=Corso+Michelangelo+30+Sant%27Antimo" target="_blank" rel="noopener">Indicazioni</a>
+        </div>
+      </div>
+      <form id="f" class="reveal d2">
+        <h3>Richiedi un <em>appuntamento</em></h3>
+        <p>Lasciaci i tuoi contatti, ti richiamiamo noi.</p>
+        <div class="field"><input required placeholder=" " id="n"><label for="n">Nome e cognome</label></div>
+        <div class="field"><input required type="tel" placeholder=" " id="t"><label for="t">Telefono</label></div>
+        <div class="field"><span class="static">Preferisci essere ricontattato</span><select><option>Al mattino</option><option>Al pomeriggio</option><option>Indifferente</option></select></div>
+        <label class="consent"><input type="checkbox" required> Ho letto l'informativa privacy e acconsento a essere ricontattato per fissare l'appuntamento.</label>
+        <button class="btn btn-gold" style="margin-top:32px;width:100%;justify-content:center">Invia richiesta <span class="arrow"></span></button>
+        <div class="ok" id="ok">Grazie. Questa è un'anteprima: nel sito definitivo la richiesta arriverà direttamente allo studio.</div>
+      </form>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="big-name split-words" data-split>Studio Dentistico Ceparano</div>
+    <div class="fgrid">
+      <div><h4>Studio</h4><p>Corso Michelangelo, 30<br>80029 Sant'Antimo (NA)<br>Tel. e WhatsApp 338 719 6422</p></div>
+      <div><h4>Pagine</h4><a data-go="home">Home</a><a data-go="studio">Lo Studio</a><a data-go="trattamenti">Trattamenti</a><a data-go="prima-visita">Prima visita</a><a data-go="contatti">Contatti</a></div>
+      <div><h4>Informazioni</h4><a>Privacy policy</a><a>Cookie policy</a><a>Preferenze cookie</a></div>
+    </div>
+    <div class="legal">
+      Direttore Sanitario: Dott. <span class="ph">[Nome]</span> Ceparano – Odontoiatra, iscritto all'Albo degli Odontoiatri dell'Ordine dei Medici Chirurghi e Odontoiatri di Napoli n. <span class="ph">[…]</span><br>
+      P.IVA 04508841212 · Le informazioni hanno carattere informativo ai sensi della L. 145/2018 e non sostituiscono la visita odontoiatrica. Immagini e modelli 3D a scopo illustrativo.<br>
+      Sito realizzato da Dental Go
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/393387196422" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0b1514"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9 0-1.4.7-2 1-2.3.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.7-.1l1-1.2c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.2.1.6-.1 1.1Z"/></svg></a>
+
+<script>
+const T=[
+ ["Igiene e prevenzione","Pulizia professionale, istruzioni per l'igiene a casa e controlli periodici per denti e gengive in salute.","img/tools.jpg"],
+ ["Conservativa","Cura della carie e ricostruzione dei denti con materiali estetici del colore naturale del dente.","img/detail-chair.jpg"],
+ ["Endodonzia","Terapia canalare per trattare la polpa del dente e conservarlo quando è possibile.","img/room.jpg"],
+ ["Protesi","Corone, ponti e protesi rimovibili per ripristinare funzione masticatoria ed estetica.","img/reception.jpg"],
+ ["Implantologia","Sostituzione dei denti mancanti con impianti, dopo un'attenta valutazione clinica e radiografica.","img/room.jpg"],
+ ["Ortodonzia","Correzione della posizione dei denti in bambini e adulti, anche con allineatori trasparenti.","img/lounge.jpg"],
+ ["Odontoiatria pediatrica","Prime visite, prevenzione e cure per i più piccoli, in un ambiente sereno.","img/lounge.jpg"],
+ ["Sbiancamento","Trattamento professionale per schiarire il colore dei denti, dopo una visita di controllo.","img/detail-chair.jpg"]
+];
+const row=(t,i)=>`<div class="trow reveal${i===0?' act':''}" data-i="${i}"><span class="n">${String(i+1).padStart(2,'0')}</span><h3>${t[0]}</h3><span class="go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg></span><p>${t[1]}</p></div>`;
+document.getElementById('home-treat').innerHTML=T.slice(0,6).map(row).join('');
+document.getElementById('all-treat').innerHTML=T.map(row).join('');
+const ts=document.getElementById('tsticky');ts.innerHTML=T.slice(0,6).map((t,i)=>`<img src="${t[2]}" alt="" class="${i===0?'on':''}">`).join('');
+function activate(list,r){list.querySelectorAll('.trow').forEach(x=>x.classList.toggle('act',x===r));if(list.id==='home-treat'){ts.querySelectorAll('img').forEach((im,i)=>im.classList.toggle('on',i==r.dataset.i))}}
+document.querySelectorAll('.tlist').forEach(l=>{l.addEventListener('click',e=>{const r=e.target.closest('.trow');if(r)activate(l,r)});l.addEventListener('mouseover',e=>{const r=e.target.closest('.trow');if(r&&matchMedia('(hover:hover)').matches)activate(l,r)})});
+
+// marquee
+const mqw=["Igiene","Conservativa","Endodonzia","Protesi","Implantologia","Ortodonzia","Pediatrica","Sbiancamento"];
+document.getElementById('mq').innerHTML=[...mqw,...mqw].map(w=>`<span>${w}</span>`).join('');
+
+// split words
+document.querySelectorAll('[data-split]').forEach(el=>{
+  const html=el.textContent.trim().split(/\s+/).map((w,i)=>`<span class="w"><span style="transition-delay:${i*0.045}s">${w}</span></span>`).join(' ');
+  el.innerHTML=html;
+});
+// italicise accent words after split
+document.querySelectorAll('[data-split]').forEach(el=>{el.querySelectorAll('.w>span').forEach(s=>{if(/^(cura|studio\.|sorriso\.|persona\.»|messaggio\.|insieme,|nome\.|trattamento\?|fretta\.|sanificati\.|Ceparano)$/.test(s.textContent))s.innerHTML='<em>'+s.textContent+'</em>'})});
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -50px 0px'});
+function arm(){document.querySelectorAll('.page.on .reveal:not(.in),.page.on .mask:not(.in),.page.on [data-split]:not(.in),.page.on .steps:not(.in),footer [data-split]:not(.in)').forEach(el=>io.observe(el))}
+
+// routing with curtain
+const pages=['home','studio','trattamenti','prima-visita','contatti'];
+const mnav=document.getElementById('mnav'),burger=document.getElementById('burger'),hdr=document.getElementById('hdr'),cur=document.getElementById('curtain');
+let current=null;
+function render(id){
+  pages.forEach(p=>document.getElementById('p-'+p).classList.toggle('on',p===id));
+  document.querySelectorAll('nav.menu a').forEach(a=>a.classList.toggle('active',a.dataset.go===id));
+  mnav.classList.remove('open');burger.classList.remove('x');
+  window.scrollTo(0,0);current=id;setTimeout(()=>{arm();onScroll()},60);
+}
+function go(id,anim=true){
+  if(!pages.includes(id))id='home';
+  if(id===current){mnav.classList.remove('open');burger.classList.remove('x');window.scrollTo({top:0,behavior:'smooth'});return}
+  if(!anim||matchMedia('(prefers-reduced-motion:reduce)').matches){render(id);return}
+  cur.className='';void cur.offsetWidth;cur.className='in';
+  setTimeout(()=>{render(id);cur.className='out';setTimeout(()=>cur.className='',750)},720);
+}
+document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-go]');if(!a)return;e.preventDefault();
+  const id=a.dataset.go;if(location.hash.slice(1)!==id){try{history.pushState(null,'','#'+id)}catch(_){try{location.hash=id}catch(__){}}}go(id);
+});
+window.addEventListener('popstate',()=>go(location.hash.slice(1)||'home'));
+window.addEventListener('hashchange',()=>go(location.hash.slice(1)||'home'));
+burger.onclick=()=>{mnav.classList.toggle('open');burger.classList.toggle('x')};
+
+// scroll effects
+const setBar=()=>document.documentElement.style.setProperty('--bar',document.querySelector('.demo-bar').offsetHeight+'px');setBar();addEventListener('resize',setBar);
+let lastY=0;const hg=document.getElementById('hgal'),rail=document.getElementById('rail'),hp=document.getElementById('hprog');
+function onScroll(){
+  const y=scrollY;
+  hdr.classList.toggle('solid',y>40);
+  hdr.classList.toggle('hide',y>500&&y>lastY&&!mnav.classList.contains('open'));lastY=y;
+  document.querySelectorAll('.page.on [data-par]').forEach(el=>{const r=el.parentElement.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;el.style.transform=`translate3d(0,${(-r.top)*parseFloat(el.dataset.par)}px,0)`});
+  if(current==='home'&&innerWidth>980){const r=hg.getBoundingClientRect();const total=hg.offsetHeight-innerHeight;const p=Math.min(1,Math.max(0,-r.top/total));const max=rail.scrollWidth-innerWidth+64;rail.style.transform=`translate3d(${-p*max}px,0,0)`;hp.style.width=(p*100)+'%'}
+}
+addEventListener('scroll',()=>requestAnimationFrame(onScroll),{passive:true});
+
+// cursor
+const c=document.getElementById('cur');let cx=0,cy=0,tx=0,ty=0;
+addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function loop(){cx+=(tx-cx)*.18;cy+=(ty-cy)*.18;c.style.left=cx+'px';c.style.top=cy+'px';requestAnimationFrame(loop)})();
+document.addEventListener('mouseover',e=>{const t=e.target.closest('.hgal figure,.mask,.trow');c.classList.toggle('big',!!t);c.querySelector('span').textContent=t&&t.classList.contains('trow')?'Leggi':'Vedi'});
+
+document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();document.getElementById('ok').style.display='block'});
+
+// boot
+render(pages.includes(location.hash.slice(1))?location.hash.slice(1):'home');
+function boot(){setTimeout(()=>{document.getElementById('pre').classList.add('out');document.body.classList.remove('lock');document.body.classList.add('ready');document.querySelectorAll('.hero .reveal').forEach(el=>el.classList.add('in'))},1500)}
+if(document.readyState==='complete')boot();else addEventListener('load',boot);
+setTimeout(()=>{if(document.body.classList.contains('lock'))boot()},4000);
+</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+const mobile=matchMedia('(max-width:980px)').matches;
+const DPR=Math.min(devicePixelRatio,mobile?1.5:2);
+function mkRenderer(el){
+  const r=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
+  r.setPixelRatio(DPR);r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.05;r.outputColorSpace=THREE.SRGBColorSpace;
+  el.appendChild(r.domElement);return r;
+}
+function envFor(r){const pm=new THREE.PMREMGenerator(r);return pm.fromScene(new RoomEnvironment(),0.04).texture}
+const ss=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t)};
+// ---- geometry: ceramic molar crown ----
+function crownGeo(){
+  const g=new THREE.SphereGeometry(1,128,96);const p=g.attributes.position;const v=new THREE.Vector3();
+  for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i);
+    let {x,y,z}=v;
+    // boxy molar silhouette
+    const k=1+0.12*(Math.abs(x)+Math.abs(z));x*=k*1.05;z*=k*0.95;
+    if(y>0){y=y*0.62;const cusp=0.11*Math.cos(x*3.1)*Math.cos(z*3.1)+0.05*Math.cos(x*7)*Math.cos(z*6);y+=cusp*ss(0.15,0.6,y)-0.05*ss(0.3,0.62,y)*(1-Math.abs(x))*(1-Math.abs(z));}
+    else{y=y*0.7;const neck=1-0.18*ss(0,0.7,-y);x*=neck;z*=neck;}
+    p.setXYZ(i,x,y,z);}
+  g.computeVertexNormals();return g;
+}
+function rootGeo(len,bend){
+  const pts=[];for(let i=0;i<=24;i++){const t=i/24;pts.push(new THREE.Vector2(0.36*(1-t*0.82)*(1-0.15*t*t)+0.02,-t*len))}
+  const g=new THREE.LatheGeometry(pts,64);const p=g.attributes.position;
+  for(let i=0;i<p.count;i++){const y=p.getY(i);const t=-y/len;p.setX(i,p.getX(i)+bend*t*t)}
+  g.computeVertexNormals();return g;
+}
+function toothGeo(){
+  const c=crownGeo();
+  const r1=rootGeo(1.9,-0.25);r1.translate(-0.42,-0.45,0.05);
+  const r2=rootGeo(1.75,0.25);r2.translate(0.42,-0.45,0.05);
+  const r3=rootGeo(1.5,0.0);r3.translate(0,-0.45,-0.35);
+  const m=mergeGeometries([c.toNonIndexed(),r1.toNonIndexed(),r2.toNonIndexed(),r3.toNonIndexed()]);m.computeVertexNormals();return m;
+}
+const ceramic=()=>new THREE.MeshPhysicalMaterial({color:0xf6f1e8,roughness:0.16,metalness:0,clearcoat:1,clearcoatRoughness:0.08,sheen:0.6,sheenColor:new THREE.Color(0xdcc29a),transmission:0.06,thickness:1.2,ior:1.5,specularIntensity:0.9});
+const gold=()=>new THREE.MeshPhysicalMaterial({color:0xc9a26f,metalness:1,roughness:0.22,clearcoat:0.4});
+const titanium=()=>new THREE.MeshPhysicalMaterial({color:0xd4d8dd,metalness:0.85,roughness:0.38,clearcoat:0.3,envMapIntensity:1.6});
+function visible(el,cb){new IntersectionObserver(es=>cb(es[0].isIntersecting),{rootMargin:'100px'}).observe(el)}
+
+// ================= HERO TOOTH =================
+(function(){
+  const el=document.getElementById('tooth3d');if(!el)return;
+  const r=mkRenderer(el);const sc=new THREE.Scene();sc.environment=envFor(r);
+  const cam=new THREE.PerspectiveCamera(32,1,0.1,100);cam.position.set(0,0.2,9.5);
+  const grp=new THREE.Group();sc.add(grp);
+  const tooth=new THREE.Mesh(toothGeo(),ceramic());tooth.position.y=0.55;grp.add(tooth);
+  // gold orbit rings
+  const rings=[];[[2.25,0.008,1.1],[2.7,0.005,-0.6],[3.2,0.004,0.35]].forEach(([R,t,tilt],i)=>{const m=new THREE.Mesh(new THREE.TorusGeometry(R,t,16,220),gold());m.rotation.x=Math.PI/2+tilt*0.35;m.rotation.y=tilt;grp.add(m);rings.push(m)});
+  // orbiting gold beads
+  const beads=[];for(let i=0;i<3;i++){const b=new THREE.Mesh(new THREE.SphereGeometry(0.055,24,24),gold());grp.add(b);beads.push(b)}
+  // dust
+  const N=mobile?220:520,pos=new Float32Array(N*3);for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*12;pos[i*3+1]=(Math.random()-.5)*8;pos[i*3+2]=(Math.random()-.5)*6-1}
+  const dg=new THREE.BufferGeometry();dg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const dust=new THREE.Points(dg,new THREE.PointsMaterial({color:0xdcc29a,size:0.025,transparent:true,opacity:.7,depthWrite:false}));sc.add(dust);
+  const key=new THREE.DirectionalLight(0xfff3e0,1.6);key.position.set(3,5,4);sc.add(key);
+  const rim=new THREE.DirectionalLight(0xb8956a,2.2);rim.position.set(-4,1,-3);sc.add(rim);
+  sc.add(new THREE.AmbientLight(0x1b3531,0.6));
+  function size(){const w=el.clientWidth,h=el.clientHeight;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();grp.scale.setScalar(mobile?0.62:Math.min(1,w/h*0.9));grp.position.x=mobile?0:0.2}
+  size();addEventListener('resize',size);
+  // interaction
+  let dragging=false,lx=0,ly=0,vy=0.0035,ry=0,rx=0,trx=0,mx=0,my=0;
+  el.addEventListener('pointerdown',e=>{dragging=true;lx=e.clientX;ly=e.clientY;el.setPointerCapture(e.pointerId)});
+  el.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;vy=dx*0.0009;trx=Math.max(-.6,Math.min(.6,trx+dy*0.004))});
+  el.addEventListener('pointerup',()=>dragging=false);
+  addEventListener('mousemove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+  let on=true;visible(el,v=>on=v);const clock=new THREE.Clock();
+  (function loop(){requestAnimationFrame(loop);if(!on)return;const t=clock.getElapsedTime();
+    if(!dragging)vy+=(0.0035-vy)*0.02;ry+=vy;rx+=(trx-rx)*0.08;if(!dragging)trx*=0.985;
+    tooth.rotation.y=ry;tooth.rotation.x=rx+Math.sin(t*0.6)*0.05;tooth.position.y=0.55+Math.sin(t*0.9)*0.08;
+    rings.forEach((m,i)=>{m.rotation.z=t*(0.08+i*0.05)*(i%2?-1:1)});
+    beads.forEach((b,i)=>{const a=t*(0.5+i*0.17)+i*2.1,R=[2.25,2.7,3.2][i];b.position.set(Math.cos(a)*R,Math.sin(a*0.7)*0.5*(i-1)+0.4,Math.sin(a)*R)});
+    dust.rotation.y=t*0.02;
+    const sy=Math.min(1,scrollY/innerHeight);grp.rotation.x=my*0.12+sy*0.35;grp.rotation.y=mx*0.25;grp.position.y=sy*1.2;
+    r.render(sc,cam)})();
+  requestAnimationFrame(()=>el.classList.add('live'));
+})();
+
+// ================= IMPLANT EXPLODED =================
+(function(){
+  const sec=document.getElementById('x3d');if(!sec)return;const st=sec.querySelector('.stick');
+  const r=mkRenderer(st);r.domElement.style.position='absolute';const sc=new THREE.Scene();sc.environment=envFor(r);
+  const cam=new THREE.PerspectiveCamera(30,1,0.1,100);cam.position.set(0,0,12);
+  const grp=new THREE.Group();sc.add(grp);
+  // screw: tapered core + helix thread
+  const core=new THREE.Mesh(new THREE.CylinderGeometry(0.31,0.18,2.4,64),titanium());
+  class Helix extends THREE.Curve{getPoint(t,o=new THREE.Vector3()){const turns=11,a=t*turns*Math.PI*2,y=1.1-t*2.25,rad=0.315-0.13*t;return o.set(Math.cos(a)*rad,y,Math.sin(a)*rad)}}
+  const thread=new THREE.Mesh(new THREE.TubeGeometry(new Helix(),900,0.042,8,false),titanium());
+  const tip=new THREE.Mesh(new THREE.ConeGeometry(0.2,0.3,48),titanium());tip.rotation.x=Math.PI;tip.position.y=-1.35;
+  const collar=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.36,0.22,64),titanium());collar.position.y=1.3;
+  const screw=new THREE.Group();screw.add(core,thread,tip,collar);grp.add(screw);
+  // abutment
+  const ab=new THREE.Group();
+  const a1=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.38,0.5,64),gold());a1.position.y=0;
+  const a2=new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.3,0.7,6),gold());a2.position.y=0.6;
+  const a3=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.12,0.4,32),gold());a3.position.y=-0.4;
+  ab.add(a1,a2,a3);grp.add(ab);
+  // crown
+  const cg=crownGeo();const crown=new THREE.Mesh(cg,ceramic());crown.scale.set(0.82,0.95,0.82);grp.add(crown);
+  // ghost gum plane ring
+  const gum=new THREE.Mesh(new THREE.TorusGeometry(0.9,0.004,8,160),gold());gum.rotation.x=Math.PI/2;grp.add(gum);
+  const key=new THREE.DirectionalLight(0xfff3e0,1.8);key.position.set(4,6,5);sc.add(key);
+  const rim=new THREE.DirectionalLight(0xb8956a,2.4);rim.position.set(-5,2,-4);sc.add(rim);
+  sc.add(new THREE.AmbientLight(0x1b3531,0.5));
+  const L=[document.getElementById('l0'),document.getElementById('l1'),document.getElementById('l2')],bar=document.getElementById('xbar');
+  function size(){const w=st.clientWidth,h=st.clientHeight;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();grp.position.x=mobile?0:1.9;grp.position.y=mobile?-1.3:-0.6;grp.scale.setScalar(mobile?0.62:0.82)}
+  size();addEventListener('resize',size);
+  let on=false;visible(sec,v=>on=v);const clock=new THREE.Clock();let sp=0;const v=new THREE.Vector3();
+  function place(lbl,obj,dx){obj.getWorldPosition(v);v.project(cam);const x=(v.x*.5+.5)*st.clientWidth,y=(-v.y*.5+.5)*st.clientHeight;lbl.style.left=(x+dx)+'px';lbl.style.top=(y-18)+'px'}
+  (function loop(){requestAnimationFrame(loop);if(!on)return;const t=clock.getElapsedTime();
+    const rc=sec.getBoundingClientRect();const p=Math.min(1,Math.max(0,-rc.top/(sec.offsetHeight-innerHeight)));sp+=(p-sp)*0.08;
+    const e=ss(0.08,0.75,sp);
+    crown.position.y=1.75+e*1.2;ab.position.y=1.15+e*0.45;screw.position.y=-0.35-e*0.7;gum.position.y=1.3+e*0.25;
+    gum.material.opacity=1;
+    grp.rotation.y=t*0.25+sp*Math.PI*1.2;grp.rotation.x=0.18+Math.sin(t*0.5)*0.03;grp.rotation.z=-0.08;
+    screw.rotation.y=-sp*Math.PI*2;
+    bar.style.width=(p*100)+'%';
+    const lo=ss(0.35,0.6,sp);L.forEach(l=>l.style.opacity=lo);
+    const dx=mobile?30:110;place(L[0],crown,dx);place(L[1],ab,dx);place(L[2],screw,dx);
+    r.render(sc,cam)})();
+})();
+</script>
+</body>
+</html>
